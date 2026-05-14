@@ -1,0 +1,38 @@
+# Arquivo de ambiente com credenciais
+.env
+
+# Logs
+*.log
+*.txt
+*_log.txt
+*_errors.log
+*_debug.log
+
+# Arquivos temporários
+*.tmp
+*.bak
+*.swp
+*~
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Diretórios de upload (se necessário)
+# uploads/
+
+# Certificados e chaves privadas
+*.p12
+*.pem
+*.key
+*.crt
+
+# Backups
+*.zip
+*.tar
+*.tar.gz
+backup-*.zip
+security.zip
+hotfix.zip
+
