@@ -1,15 +1,20 @@
 <?php
 
 define('DB_HOST', '127.0.0.1');
-define('DB_USER', 'root'); // Insira seu usuário do banco de dados
-define('DB_PASS', '');   // Insira sua senha
-define('DB_NAME', 'dev'); // Insira o nome do banco de dados
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_NAME', 'dev');
+define('DB_SOCKET', '/tmp/mysql_run/mysql.sock');
 
 // Define o fuso horário padrão para o PHP para 'America/Sao_Paulo' (Horário de Brasília)
 date_default_timezone_set('America/Sao_Paulo');
 
 try {
-    $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4", DB_USER, DB_PASS);
+    $socket = defined('DB_SOCKET') && file_exists(DB_SOCKET) ? DB_SOCKET : null;
+    $dsn = $socket
+        ? "mysql:unix_socket=" . $socket . ";dbname=" . DB_NAME . ";charset=utf8mb4"
+        : "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+    $pdo = new PDO($dsn, DB_USER, DB_PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     // Define o fuso horário da sessão do MySQL para UTC-03:00 (Horário de Brasília)
     // Isso evita o erro "Unknown or incorrect time zone" se o servidor MySQL não tiver as tabelas de fuso horário instaladas.
