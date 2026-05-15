@@ -1,9 +1,9 @@
 <?php
 
-define('DB_HOST', 'localhost');
-define('DB_USER', 'seu_usuario_aqui'); // Insira seu usuário do banco de dados
-define('DB_PASS', 'sua_senha_aqui');   // Insira sua senha
-define('DB_NAME', 'seu_banco_de_dados_aqui'); // Insira o nome do banco de dados
+define('DB_HOST', '127.0.0.1');
+define('DB_USER', 'root'); // Insira seu usuário do banco de dados
+define('DB_PASS', '');   // Insira sua senha
+define('DB_NAME', 'dev'); // Insira o nome do banco de dados
 
 // Define o fuso horário padrão para o PHP para 'America/Sao_Paulo' (Horário de Brasília)
 date_default_timezone_set('America/Sao_Paulo');
