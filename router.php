@@ -7,6 +7,10 @@
 $uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 $base = __DIR__;
 
+// Fix PHP_SELF and SCRIPT_NAME so forms inside required files post to the correct URL
+$_SERVER['PHP_SELF'] = $uri;
+$_SERVER['SCRIPT_NAME'] = $uri;
+
 // Serve static files directly (images, css, js, etc.)
 if ($uri !== '/' && file_exists($base . $uri) && !is_dir($base . $uri)) {
     // Let the built-in server handle static files
