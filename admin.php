@@ -160,44 +160,7 @@ $inactive_class = 'sidebar-item sidebar-item-inactive';
                     <i data-lucide="image" class="w-4 h-4"></i>
                     <span>Banner</span>
                 </a>
-                <a href="/admin?pagina=admin_pwa" class="<?php echo $pagina_admin == 'admin_pwa' ? $active_class : $inactive_class; ?>">
-                    <i data-lucide="smartphone" class="w-4 h-4"></i>
-                    <span>PWA</span>
-                </a>
             </div>
-            
-            <?php
-            // Carregar funções SaaS se disponível
-            if (file_exists(__DIR__ . '/saas/includes/saas_functions.php')) {
-                require_once __DIR__ . '/saas/includes/saas_functions.php';
-            }
-            
-            // Menu SaaS (sempre visível, mas submenu só quando habilitado)
-            $saas_enabled = function_exists('saas_enabled') ? saas_enabled() : false;
-            ?>
-            
-            <!-- Modo SaaS -->
-            <a href="/admin?pagina=saas_config" class="<?php echo $pagina_admin == 'saas_config' ? $active_class : $inactive_class; ?>">
-                <i data-lucide="layers" class="w-5 h-5"></i>
-                <span>Modo SaaS</span>
-            </a>
-            
-            <?php if ($saas_enabled): ?>
-            <div class="ml-4 mt-1 space-y-1">
-                <a href="/admin?pagina=saas_planos" class="<?php echo $pagina_admin == 'saas_planos' ? $active_class : $inactive_class; ?>">
-                    <i data-lucide="package" class="w-4 h-4"></i>
-                    <span>Planos</span>
-                </a>
-                <a href="/admin?pagina=saas_gateways" class="<?php echo $pagina_admin == 'saas_gateways' ? $active_class : $inactive_class; ?>">
-                    <i data-lucide="credit-card" class="w-4 h-4"></i>
-                    <span>Gateways</span>
-                </a>
-                <a href="/admin?pagina=saas_assinaturas" class="<?php echo $pagina_admin == 'saas_assinaturas' ? $active_class : $inactive_class; ?>">
-                    <i data-lucide="users" class="w-4 h-4"></i>
-                    <span>Assinaturas</span>
-                </a>
-            </div>
-            <?php endif; ?>
             
             <?php
             // Itens de menu dinâmicos de plugins (outros plugins)
