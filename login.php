@@ -357,7 +357,7 @@ ob_end_clean();
         }
     </style>
 </head>
-<body class="min-h-screen" style="background-color: #07090d;">
+<body class="min-h-screen" style="background-color: #060810;">
 
     <div class="min-h-screen grid lg:grid-cols-2">
             

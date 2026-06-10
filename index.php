@@ -276,56 +276,63 @@ $page_content = ob_get_clean();
             position: relative;
             cursor: pointer;
             padding: 8px;
-            border-radius: 9999px; /* Full rounded */
-            transition: background-color 0.2s;
+            border-radius: 10px;
+            transition: background-color 0.18s ease;
         }
         .notification-bell-container:hover {
-            background-color: #f3f4f6; /* Gray-100 */
+            background-color: rgba(255, 255, 255, 0.07);
         }
         .notification-badge {
             position: absolute;
-            top: 0;
-            right: 0;
-            background-color: #f97316; /* Orange-500 */
+            top: 3px;
+            right: 3px;
+            background: #ef4444;
             color: white;
-            font-size: 0.75rem; /* text-xs */
-            font-weight: 700; /* font-bold */
-            border-radius: 9999px; /* Full rounded */
-            padding: 0.15rem 0.4rem;
-            min-width: 1.25rem; /* w-5 h-5 */
-            height: 1.25rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            border-radius: 99px;
+            padding: 0 4px;
+            min-width: 16px;
+            height: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             line-height: 1;
-            transform: translate(25%, -25%);
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            transition: background-color 0.2s;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.55);
+            animation: pulse-badge 2s infinite;
+        }
+        @keyframes pulse-badge {
+            0%, 100% { box-shadow: 0 0 8px rgba(239, 68, 68, 0.55); }
+            50% { box-shadow: 0 0 16px rgba(239, 68, 68, 0.85); }
         }
         .notification-popup {
             position: fixed;
             top: 0;
-            right: 0;
-            width: 320px;
+            right: -380px;
+            width: 360px;
             height: 100vh;
-            background-color: #0f1419;
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: -4px 0 15px rgba(0,0,0,0.3);
+            background: linear-gradient(180deg, #0d1117 0%, #060810 100%);
+            border-left: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: -8px 0 40px rgba(0, 0, 0, 0.55);
             z-index: 1000;
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
+            transition: right 0.32s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
         }
         .notification-popup.open {
-            transform: translateX(0);
+            right: 0;
         }
         .notification-header {
-            padding: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.125rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            backdrop-filter: blur(10px);
         }
         .notification-list {
             flex-grow: 1;
@@ -375,20 +382,20 @@ $page_content = ob_get_clean();
         /* Live Floating Notification */
         .live-notification-container {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 320px;
-            background-color: #0f1419;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-            padding: 1rem;
+            bottom: 24px;
+            right: 24px;
+            width: 330px;
+            background: linear-gradient(145deg, #131920, #0d1117);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 6px 16px rgba(0, 0, 0, 0.4);
+            padding: 1rem 1.125rem;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            transform: translateY(120%); /* Start off-screen */
+            gap: 0.875rem;
+            transform: translateY(130%);
             opacity: 0;
-            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease-out;
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease-out;
             z-index: 1000;
         }
 
@@ -398,12 +405,12 @@ $page_content = ob_get_clean();
         }
 
         .live-notification-product-image {
-            width: 50px;
-            height: 50px;
-            border-radius: 8px;
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
             object-fit: cover;
             flex-shrink: 0;
-            border: 1px solid #e5e7eb;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .cash-register-sound {
             display: none; /* Hide audio element */
@@ -452,7 +459,7 @@ $page_content = ob_get_clean();
 
     </style>
 </head>
-<body class="font-sans flex flex-col min-h-screen" style="background-color: #07090d;">
+<body class="font-sans flex flex-col min-h-screen" style="background-color: #060810;">
     <!-- Header Fixo Invisível (Topo) -->
     <header class="fixed top-0 left-0 right-0 z-40 bg-dark-base/80 backdrop-blur-sm h-[60px] flex items-center justify-between px-4 md:px-6">
         <!-- Botão de Toggle Mobile -->

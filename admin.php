@@ -48,20 +48,20 @@ $inactive_class = 'sidebar-item sidebar-item-inactive';
         /* Live Floating Notification */
         .live-notification-container {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 320px;
-            background-color: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            padding: 1rem;
+            bottom: 24px;
+            right: 24px;
+            width: 330px;
+            background: linear-gradient(145deg, #131920, #0d1117);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 6px 16px rgba(0, 0, 0, 0.4);
+            padding: 1rem 1.125rem;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            transform: translateY(120%); /* Start off-screen */
+            gap: 0.875rem;
+            transform: translateY(130%);
             opacity: 0;
-            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease-out;
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease-out;
             z-index: 1000;
         }
 
@@ -71,12 +71,12 @@ $inactive_class = 'sidebar-item sidebar-item-inactive';
         }
 
         .live-notification-product-image {
-            width: 50px;
-            height: 50px;
-            border-radius: 8px;
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
             object-fit: cover;
             flex-shrink: 0;
-            border: 1px solid #e5e7eb; /* Adiciona uma borda sutil ao ícone */
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .cash-register-sound {
             display: none; /* Hide audio element */
@@ -85,7 +85,7 @@ $inactive_class = 'sidebar-item sidebar-item-inactive';
 
     </style>
 </head>
-<body class="font-sans flex flex-col min-h-screen" style="background-color: #07090d;">
+<body class="font-sans flex flex-col min-h-screen" style="background-color: #060810;">
     <!-- Header Fixo Invisível (Topo) -->
     <header class="fixed top-0 left-0 right-0 z-40 bg-dark-base/80 backdrop-blur-sm h-[60px] flex items-center justify-between px-4 md:px-6">
         <!-- Botão de Toggle Mobile -->
