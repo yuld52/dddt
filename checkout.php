@@ -157,72 +157,21 @@ $timerConfig = $checkout_config['timer'] ?? ['enabled' => false, 'minutes' => 15
 $salesNotificationConfig = $checkout_config['salesNotification'] ?? ['enabled' => false, 'names' => '', 'product' => '', 'tempo_exibicao' => 5, 'intervalo_notificacao' => 10];
 $backRedirectConfig = $checkout_config['backRedirect'] ?? ['enabled' => false, 'url' => ''];
 $redirectUrlConfig = $checkout_config['redirectUrl'] ?? '';
-// Ler paymentMethods com retrocompatibilidade
-$payment_methods_config = $checkout_config['paymentMethods'] ?? [];
-if (empty($payment_methods_config) || !isset($payment_methods_config['pix']['gateway'])) {
-    // Estrutura antiga - migrar para nova estrutura
-    $old_payment_methods = $checkout_config['paymentMethods'] ?? ['credit_card' => false, 'pix' => false, 'ticket' => false];
-    $payment_methods_config = [
-        'pix' => [
-            'gateway' => ($gateway === 'pushinpay') ? 'pushinpay' : 'mercadopago',
-            'enabled' => $old_payment_methods['pix'] ?? false
-        ],
-        'credit_card' => [
-            'gateway' => 'mercadopago',
-            'enabled' => $old_payment_methods['credit_card'] ?? false
-        ],
-        'ticket' => [
-            'gateway' => 'mercadopago',
-            'enabled' => $old_payment_methods['ticket'] ?? false
-        ]
-    ];
-}
+// E2Payments: único gateway activo
+$payment_methods_config       = [];
+$customer_fields_config       = $checkout_config['customer_fields'] ?? ['enable_cpf' => false, 'enable_phone' => true];
+$customer_fields_config['enable_cpf'] = false;
 
-$customer_fields_config = $checkout_config['customer_fields'] ?? ['enable_cpf' => true, 'enable_phone' => true];
-// CPF sempre obrigatório, mesmo se configurado como false no banco
-$customer_fields_config['enable_cpf'] = true;
-
-// Calcular variáveis de métodos de pagamento habilitados no escopo global
-// (necessário para inicialização do JavaScript do Mercado Pago, Beehive e Hypercash)
-$pix_pushinpay_enabled = false;
-$pix_mercadopago_enabled = false;
-$pix_efi_enabled = false;
-$credit_card_enabled = false;
-$credit_card_beehive_enabled = false;
+// Variáveis legadas mantidas por compatibilidade com helpers existentes
+$pix_pushinpay_enabled        = false;
+$pix_mercadopago_enabled      = false;
+$pix_efi_enabled              = false;
+$credit_card_enabled          = false;
+$credit_card_beehive_enabled  = false;
 $credit_card_hypercash_enabled = false;
 $credit_card_mercadopago_enabled = false;
-$credit_card_efi_enabled = false;
-$ticket_enabled = false;
-
-// Ler nova estrutura com gateway por método
-if (isset($payment_methods_config['pix']['gateway'])) {
-    if ($payment_methods_config['pix']['gateway'] === 'pushinpay' && ($payment_methods_config['pix']['enabled'] ?? false)) {
-        $pix_pushinpay_enabled = true;
-    } elseif ($payment_methods_config['pix']['gateway'] === 'mercadopago' && ($payment_methods_config['pix']['enabled'] ?? false)) {
-        $pix_mercadopago_enabled = true;
-    } elseif ($payment_methods_config['pix']['gateway'] === 'efi' && ($payment_methods_config['pix']['enabled'] ?? false)) {
-        $pix_efi_enabled = true;
-    }
-}
-
-if (isset($payment_methods_config['credit_card']['enabled']) && $payment_methods_config['credit_card']['enabled']) {
-    $credit_card_enabled = true;
-    // Verificar qual gateway está configurado para cartão
-    $credit_card_gateway = $payment_methods_config['credit_card']['gateway'] ?? 'mercadopago';
-    if ($credit_card_gateway === 'hypercash') {
-        $credit_card_hypercash_enabled = true;
-    } elseif ($credit_card_gateway === 'beehive') {
-        $credit_card_beehive_enabled = true;
-    } elseif ($credit_card_gateway === 'efi') {
-        $credit_card_efi_enabled = true;
-    } else {
-        $credit_card_mercadopago_enabled = true;
-    }
-}
-
-if (isset($payment_methods_config['ticket']['enabled']) && $payment_methods_config['ticket']['enabled']) {
-    $ticket_enabled = true;
-}
+$credit_card_efi_enabled      = false;
+$ticket_enabled               = false;
 
 // Variáveis de Resumo
 $main_price = floatval($produto['preco']);
@@ -330,75 +279,48 @@ function render_order_bumps_section($order_bumps_array) {
     return $html;
 }
 
-function render_payment_methods_selector($pix_pushinpay_enabled, $pix_mercadopago_enabled, $pix_efi_enabled, $credit_card_enabled, $ticket_enabled, $accentColor, $credit_card_beehive_enabled = false, $credit_card_mercadopago_enabled = false, $credit_card_hypercash_enabled = false, $credit_card_efi_enabled = false) {
-    $available_methods = [];
-    
-    // Pix - prioridade PushinPay > Efí > Mercado Pago
-    if ($pix_pushinpay_enabled) {
-        $available_methods[] = ['type' => 'pix_pushinpay', 'name' => 'Pix', 'icon' => 'qr-code', 'gateway' => 'pushinpay'];
-    } elseif ($pix_efi_enabled) {
-        $available_methods[] = ['type' => 'pix_efi', 'name' => 'Pix', 'icon' => 'qr-code', 'gateway' => 'efi'];
-    } elseif ($pix_mercadopago_enabled) {
-        $available_methods[] = ['type' => 'pix_mercadopago', 'name' => 'Pix', 'icon' => 'qr-code', 'gateway' => 'mercadopago'];
-    }
-    
-    // Cartão de Crédito - prioridade Hypercash > Beehive > Efí > Mercado Pago
-    if ($credit_card_hypercash_enabled) {
-        $available_methods[] = ['type' => 'credit_card_hypercash', 'name' => 'Cartão de Crédito', 'icon' => 'credit-card', 'gateway' => 'hypercash'];
-    } elseif ($credit_card_beehive_enabled) {
-        $available_methods[] = ['type' => 'credit_card_beehive', 'name' => 'Cartão de Crédito', 'icon' => 'credit-card', 'gateway' => 'beehive'];
-    } elseif ($credit_card_efi_enabled) {
-        $available_methods[] = ['type' => 'credit_card_efi', 'name' => 'Cartão de Crédito', 'icon' => 'credit-card', 'gateway' => 'efi'];
-    } elseif ($credit_card_mercadopago_enabled) {
-        $available_methods[] = ['type' => 'credit_card', 'name' => 'Cartão de Crédito', 'icon' => 'credit-card', 'gateway' => 'mercadopago'];
-    } elseif ($credit_card_enabled) {
-        // Retrocompatibilidade
-        $available_methods[] = ['type' => 'credit_card', 'name' => 'Cartão de Crédito', 'icon' => 'credit-card', 'gateway' => 'mercadopago'];
-    }
-    
-    if ($ticket_enabled) {
-        $available_methods[] = ['type' => 'ticket', 'name' => 'Boleto', 'icon' => 'file-text', 'gateway' => 'mercadopago'];
-    }
-    
-    if (empty($available_methods)) {
-        return '';
-    }
-    
-    $accentColorEscaped = htmlspecialchars($accentColor, ENT_QUOTES, 'UTF-8');
-    
-    $html = "<div class='mb-6'>";
-    $html .= "<h3 class='text-lg font-semibold mb-4 text-gray-800 flex items-center'><i data-lucide='wallet' class='w-5 h-5 mr-2'></i>Escolha a forma de pagamento</h3>";
-    $html .= "<div class='grid grid-cols-2 lg:grid-cols-3 gap-4' id='payment-methods-selector'>";
-    
-    foreach ($available_methods as $method) {
-        $methodType = htmlspecialchars($method['type'], ENT_QUOTES, 'UTF-8');
-        $methodName = htmlspecialchars($method['name'], ENT_QUOTES, 'UTF-8');
-        $methodIcon = htmlspecialchars($method['icon'], ENT_QUOTES, 'UTF-8');
-        
-        $html .= "<div class='payment-method-card bg-white rounded-lg border-2 border-gray-200 p-4 cursor-pointer transition-all hover:shadow-lg flex flex-col items-center justify-center text-center min-h-[120px]' data-payment-method='{$methodType}' style='border-color: #e5e7eb;'>";
-        
-        // Se for Pix, usar logo oficial ao invés de ícone
-        if ($methodType === 'pix_pushinpay' || $methodType === 'pix_mercadopago' || $methodType === 'pix_efi') {
-            $html .= "<svg width='32' height='32' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' class='mb-2' style='color: {$accentColorEscaped};' fill='currentColor'><path d='M11.917 11.71a2.046 2.046 0 0 1-1.454-.602l-2.1-2.1a.4.4 0 0 0-.551 0l-2.108 2.108a2.044 2.044 0 0 1-1.454.602h-.414l2.66 2.66c.83.83 2.177.83 3.007 0l2.667-2.668h-.253zM4.25 4.282c.55 0 1.066.214 1.454.602l2.108 2.108a.39.39 0 0 0 .552 0l2.1-2.1a2.044 2.044 0 0 1 1.453-.602h.253L9.503 1.623a2.127 2.127 0 0 0-3.007 0l-2.66 2.66h.414z'/><path d='m14.377 6.496-1.612-1.612a.307.307 0 0 1-.114.023h-.733c-.379 0-.75.154-1.017.422l-2.1 2.1a1.005 1.005 0 0 1-1.425 0L5.268 5.32a1.448 1.448 0 0 0-1.018-.422h-.9a.306.306 0 0 1-.109-.021L1.623 6.496c-.83.83-.83 2.177 0 3.008l1.618 1.618a.305.305 0 0 1 .108-.022h.901c.38 0 .75-.153 1.018-.421L7.375 8.57a1.034 1.034 0 0 1 1.426 0l2.1 2.1c.267.268.638.421 1.017.421h.733c.04 0 .079.01.114.024l1.612-1.612c.83-.83.83-2.178 0-3.008z'/></svg>";
-        } else {
-            $html .= "<i data-lucide='{$methodIcon}' class='w-8 h-8 mb-2' style='color: {$accentColorEscaped};'></i>";
-        }
-        
-        $html .= "<span class='font-semibold text-gray-800 text-sm'>{$methodName}</span>";
-        $html .= "</div>";
-    }
-    
-    $html .= "</div>";
-    $html .= "</div>";
-    
-    return $html;
+function render_payment_methods_selector() {
+    return '';
 }
 
 function render_payment_section($gateway, $accentColor, $payment_methods_config, $pix_pushinpay_enabled = null, $pix_mercadopago_enabled = null, $pix_efi_enabled = null, $credit_card_enabled = null, $ticket_enabled = null, $credit_card_beehive_enabled = null, $credit_card_mercadopago_enabled = null, $credit_card_hypercash_enabled = null, $credit_card_efi_enabled = null) {
-    $html = "<div data-id='payment'>";
-    $html .= "<div id='payment_section_wrapper'>";
-    
-    // Se as variáveis não foram passadas, calcular (retrocompatibilidade)
+    $ac = htmlspecialchars($accentColor, ENT_QUOTES, 'UTF-8');
+
+    $html  = "<div data-id='payment'><div id='payment_section_wrapper'>";
+    $html .= "<h3 class='text-lg font-semibold mb-4 text-gray-800 flex items-center'>";
+    $html .= "<i data-lucide='smartphone' class='w-5 h-5 mr-2' style='color:{$ac};'></i>Pagamento Móvel</h3>";
+
+    $html .= "<div class='grid grid-cols-2 gap-4 mb-5'>";
+
+    // M-Pesa card
+    $html .= "<div class='e2p-method-card bg-white rounded-lg border-2 border-gray-200 p-4 cursor-pointer transition-all hover:shadow-lg flex flex-col items-center justify-center text-center min-h-[100px]' data-method='mpesa' style='border-color:#e5e7eb;'>";
+    $html .= "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 40' class='h-8 mb-1 w-auto'><rect width='80' height='40' rx='6' fill='#e31e2c'/><text x='40' y='28' font-family='Arial,sans-serif' font-weight='900' font-size='18' fill='white' text-anchor='middle'>M-PESA</text></svg>";
+    $html .= "<span class='font-semibold text-gray-700 text-xs mt-1'>Vodacom</span>";
+    $html .= "</div>";
+
+    // e-Mola card
+    $html .= "<div class='e2p-method-card bg-white rounded-lg border-2 border-gray-200 p-4 cursor-pointer transition-all hover:shadow-lg flex flex-col items-center justify-center text-center min-h-[100px]' data-method='emola' style='border-color:#e5e7eb;'>";
+    $html .= "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 40' class='h-8 mb-1 w-auto'><rect width='80' height='40' rx='6' fill='#1a56db'/><text x='40' y='28' font-family='Arial,sans-serif' font-weight='900' font-size='18' fill='white' text-anchor='middle'>e-Mola</text></svg>";
+    $html .= "<span class='font-semibold text-gray-700 text-xs mt-1'>Tmcel</span>";
+    $html .= "</div>";
+
+    $html .= "</div>";
+
+    $html .= "<div class='text-sm text-gray-600 bg-blue-50 border border-blue-100 rounded-lg p-3 mb-4 space-y-1'>";
+    $html .= "<p><span class='text-blue-500 mr-1'>•</span>Receberá uma notificação no telemóvel para confirmar o pagamento.</p>";
+    $html .= "<p><span class='text-blue-500 mr-1'>•</span>Use o número <strong>+258</strong> preenchido nos seus dados.</p>";
+    $html .= "</div>";
+
+    $html .= "<button id='btn-pagar-e2p' class='w-full text-white font-bold py-4 rounded-lg transition duration-300 text-lg flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform active:scale-95 hover:opacity-90' style='background-color:{$ac};'>";
+    $html .= "<i data-lucide='smartphone' class='w-6 h-6'></i> PAGAR COM M-PESA";
+    $html .= "</button>";
+
+    $html .= "</div></div>";
+    return $html;
+}
+
+// --- stub kept for compatibility, unused ---
+function _render_payment_section_legacy_stub($gateway, $accentColor, $payment_methods_config, $pix_pushinpay_enabled = null, $pix_mercadopago_enabled = null, $pix_efi_enabled = null, $credit_card_enabled = null, $ticket_enabled = null, $credit_card_beehive_enabled = null, $credit_card_mercadopago_enabled = null, $credit_card_hypercash_enabled = null, $credit_card_efi_enabled = null) {
     if ($pix_pushinpay_enabled === null || $pix_mercadopago_enabled === null || $pix_efi_enabled === null || $credit_card_enabled === null || $ticket_enabled === null) {
         $pix_pushinpay_enabled = false;
         $pix_mercadopago_enabled = false;
@@ -410,7 +332,6 @@ function render_payment_section($gateway, $accentColor, $payment_methods_config,
         $credit_card_efi_enabled = false;
         $ticket_enabled = false;
         
-        // Ler nova estrutura com gateway por método
         if (isset($payment_methods_config['pix']['gateway'])) {
             if ($payment_methods_config['pix']['gateway'] === 'pushinpay' && ($payment_methods_config['pix']['enabled'] ?? false)) {
                 $pix_pushinpay_enabled = true;
