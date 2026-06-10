@@ -574,10 +574,6 @@ $page_content = ob_get_clean();
                 <i data-lucide="line-chart" class="w-5 h-5"></i>
                 <span>Tracking</span>
             </a>
-            <a href="/index?pagina=clonar_site" class="<?php echo $pagina == 'clonar_site' ? $active_class : $inactive_class; ?>">
-                <i data-lucide="copy-check" class="w-5 h-5"></i>
-                <span>Clonar Site</span>
-            </a>
             <a href="/index?pagina=integracoes" class="<?php echo (in_array($pagina, ['integracoes', 'integracoes_webhooks', 'integracoes_utmfy'])) ? $active_class : $inactive_class; ?>">
                 <i data-lucide="plug-zap" class="w-5 h-5"></i>
                 <span>Integrações</span>

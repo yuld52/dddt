@@ -324,35 +324,6 @@ if (isset($_POST['salvar_gateways'])) {
                 </div>
             </a>
 
-            <!-- Card Gateways de Pagamento -->
-            <div id="card-gateways" onclick="showGatewayConfig()" class="card-hover group relative bg-dark-card border border-dark-border rounded-2xl p-8 flex flex-col justify-between h-full overflow-hidden cursor-pointer" onmouseover="this.style.borderColor='var(--accent-primary)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
-                <!-- Background Decoration -->
-                <div class="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-500" style="background-color: color-mix(in srgb, var(--accent-primary) 10%, transparent);"></div>
-
-                <div class="relative z-10">
-                    <div class="flex items-center gap-5 mb-6">
-                        <div class="h-16 w-16 rounded-2xl flex items-center justify-center shadow-sm transition-colors" style="background-color: color-mix(in srgb, var(--accent-primary) 20%, transparent); border-color: color-mix(in srgb, var(--accent-primary) 30%, transparent);" onmouseover="this.style.backgroundColor='color-mix(in srgb, var(--accent-primary) 30%, transparent)'" onmouseout="this.style.backgroundColor='color-mix(in srgb, var(--accent-primary) 20%, transparent)'">
-                            <i data-lucide="credit-card" class="w-8 h-8" style="color: var(--accent-primary);"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-2xl font-bold text-white transition-colors" onmouseover="this.style.color='var(--accent-primary)'" onmouseout="this.style.color='white'">Gateways de Pagamento</h2>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mt-1" style="background-color: color-mix(in srgb, var(--accent-primary) 20%, transparent); color: var(--accent-primary);">
-                                Pagamentos
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <p class="text-gray-400 text-base leading-relaxed mb-8">
-                        Configure suas credenciais de Mercado Pago, PushinPay, Efí e Hypercash para processar pagamentos. Gerencie suas chaves de API e métodos de recebimento.
-                    </p>
-                </div>
-
-                <div class="relative z-10 mt-auto pt-6 border-t border-dark-border">
-                    <span class="flex items-center text-sm font-bold transition-colors" style="color: var(--accent-primary);" onmouseover="this.style.color='var(--accent-primary-hover)'" onmouseout="this.style.color='var(--accent-primary)'">
-                        Configurar Gateways <i data-lucide="arrow-right" class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"></i>
-                    </span>
-                </div>
-            </div>
 
         </div>
 
