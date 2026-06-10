@@ -119,71 +119,74 @@ $cor_primaria_hover = adjustBrightness($cor_primaria, -10);
 :root {
     --accent-primary: <?php echo htmlspecialchars($cor_primaria); ?>;
     --accent-primary-hover: <?php echo htmlspecialchars($cor_primaria_hover); ?>;
-    --accent-primary-rgb: <?php $rgb = hexToRgb($cor_primaria); echo "{$rgb['r']}, {$rgb['g']}, {$rgb['b']}"; ?>;
-    --accent-glow: <?php $rgb = hexToRgb($cor_primaria); echo "rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.3)"; ?>;
-    --accent-subtle: <?php $rgb = hexToRgb($cor_primaria); echo "rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.08)"; ?>;
 }
 
-/* Utilitários de cor primária */
-.bg-primary      { background-color: var(--accent-primary) !important; }
-.bg-primary-hover:hover { background-color: var(--accent-primary-hover) !important; }
-.text-primary    { color: var(--accent-primary) !important; }
-.border-primary  { border-color: var(--accent-primary) !important; }
-.ring-primary:focus { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* Classe utilitária para cor primária */
+.bg-primary {
+    background-color: var(--accent-primary) !important;
+}
 
-/* Sidebar item ativo */
+.bg-primary-hover:hover {
+    background-color: var(--accent-primary-hover) !important;
+}
+
+.text-primary {
+    color: var(--accent-primary) !important;
+}
+
+.border-primary {
+    border-color: var(--accent-primary) !important;
+}
+
+.ring-primary:focus {
+    ring-color: var(--accent-primary) !important;
+}
+
+/* Background dinâmico para sidebar-item-active */
 .sidebar-item-active {
-    background: <?php $rgb = hexToRgb($cor_primaria); echo "linear-gradient(135deg, rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.14) 0%, rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.07) 100%)"; ?> !important;
+    background: <?php 
+        $rgb = hexToRgb($cor_primaria);
+        echo "rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.1)";
+    ?> !important;
     color: <?php echo htmlspecialchars($cor_primaria); ?> !important;
-    box-shadow: inset 0 1px 0 <?php $rgb = hexToRgb($cor_primaria); echo "rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.15)"; ?>;
 }
+
 .sidebar-item-active i {
     color: <?php echo htmlspecialchars($cor_primaria); ?> !important;
-    filter: drop-shadow(0 0 6px <?php $rgb = hexToRgb($cor_primaria); echo "rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.5)"; ?>) !important;
+    filter: drop-shadow(0 0 4px <?php 
+        $rgb = hexToRgb($cor_primaria);
+        echo "rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.4)";
+    ?>) !important;
 }
+
 .sidebar-item-active span {
     color: <?php echo htmlspecialchars($cor_primaria); ?> !important;
-    font-weight: 600;
-}
-.sidebar-item-active::before {
-    background: <?php echo htmlspecialchars($cor_primaria); ?> !important;
-    box-shadow: 0 0 10px <?php $rgb = hexToRgb($cor_primaria); echo "rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.7)"; ?> !important;
 }
 
-/* Sidebar glass */
+/* Sidebar glass border dinâmico */
 .sidebar-glass {
-    box-shadow:
-        4px 0 30px rgba(0,0,0,0.6),
-        inset -1px 0 0 <?php $rgb = hexToRgb($cor_primaria); echo "rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.06)"; ?> !important;
-}
-
-/* Avatar do usuário */
-.sidebar-user-avatar {
-    box-shadow: 0 0 14px <?php $rgb = hexToRgb($cor_primaria); echo "rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.35)"; ?> !important;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 0 0 1px <?php 
+            $rgb = hexToRgb($cor_primaria);
+            echo "rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.1)";
+        ?>,
+        0 0 40px <?php 
+            $rgb = hexToRgb($cor_primaria);
+            echo "rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.05)";
+        ?> !important;
 }
 
 /* Cards do Dashboard - bordas dinâmicas */
 div.bg-dark-card.border,
 .bg-dark-card.border {
-    border-color: <?php $rgb = hexToRgb($cor_primaria); echo "rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.35)"; ?> !important;
+    border-color: <?php echo htmlspecialchars($cor_primaria); ?> !important;
     border-width: 1px !important;
 }
 
-/* Notificação unread */
-.notification-item.unread {
-    background-color: <?php $rgb = hexToRgb($cor_primaria); echo "rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.07)"; ?> !important;
-    border-left: 2px solid <?php echo htmlspecialchars($cor_primaria); ?>;
-}
-
-/* Scrollbar accent */
-::-webkit-scrollbar-thumb:hover {
-    background: <?php $rgb = hexToRgb($cor_primaria); echo "rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.3)"; ?>;
-}
-
-/* Focus rings */
-input:focus, select:focus, textarea:focus {
+/* Força a cor nos cards que têm style inline com var(--accent-primary) */
+div[style*="border-color: var(--accent-primary)"] {
     border-color: <?php echo htmlspecialchars($cor_primaria); ?> !important;
-    box-shadow: 0 0 0 3px <?php $rgb = hexToRgb($cor_primaria); echo "rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.12)"; ?> !important;
 }
 </style>
 <?php
