@@ -1,4 +1,12 @@
 <?php
+// Configurar supressão de erros e buffering ANTES de qualquer output ou require
+ini_set('display_errors', 0);
+ini_set('html_errors', 0);
+error_reporting(E_ALL);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/../api_errors.log');
+ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -10,40 +18,22 @@ if (function_exists('apply_security_headers')) {
 }
 
 header('Content-Type: application/json');
-ob_start(); // Inicia o buffer de saída para evitar problemas com headers já enviados
 
 // Incluir PHPMailer
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
-// Ativar log de erros detalhado (APENAS PARA DEPURAÇÃO - REMOVA EM PRODUÇÃO!)
-error_reporting(E_ALL); // Habilitar todos os erros
-ini_set('display_errors', 0); // DESABILITAR exibição de erros no navegador para APIs
-ini_set('log_errors', 1); // Habilita o log de erros
-ini_set('error_log', __DIR__ . '/../api_errors.log'); // Opcional: log personalizado para esta API
-
-error_log("API: Script iniciado."); // Log para o início do script
-
 // Incluir os arquivos do PHPMailer
 $phpmailer_path = __DIR__ . '/../PHPMailer/src/';
 if (file_exists($phpmailer_path . 'Exception.php')) {
     require_once $phpmailer_path . 'Exception.php';
-    error_log("API: PHPMailer Exception.php carregado com sucesso.");
-} else {
-    error_log("API: ERRO: PHPMailer Exception.php não encontrado em " . $phpmailer_path . 'Exception.php');
 }
 if (file_exists($phpmailer_path . 'PHPMailer.php')) {
     require_once $phpmailer_path . 'PHPMailer.php';
-    error_log("API: PHPMailer PHPMailer.php carregado com sucesso.");
-} else {
-    error_log("API: ERRO: PHPMailer PHPMailer.php não encontrado em " . $phpmailer_path . 'PHPMailer.php');
 }
 if (file_exists($phpmailer_path . 'SMTP.php')) {
     require_once $phpmailer_path . 'SMTP.php';
-    error_log("API: PHPMailer SMTP.php carregado com sucesso.");
-} else {
-    error_log("API: ERRO: PHPMailer SMTP.php não encontrado em " . $phpmailer_path . 'SMTP.php');
 }
 
 
@@ -473,7 +463,6 @@ function send_delivery_email_consolidated($to_email, $customer_name, $processed_
 
 try {
     require_once __DIR__ . '/../config/config.php';
-    error_log("API: config.php carregado com sucesso.");
 
     // Verificação de segurança: Apenas usuários LOGADOS (não importa se é admin ou user) podem acessar esta API.
     // O tipo 'admin' específico será tratado no admin_api.php.
@@ -1582,7 +1571,7 @@ try {
             }));
             
             // A URL do beacon é usada para o evento page_view
-            img.src = \`${TRACK_BEACON_ENDPOINT}?tracking_id=\${STARFY_TRACK_ID}&session_id=\${sessionId}&event_type=page_view&event_data=\${eventDataString}&t=\${Date.now()}\`;
+            img.src = \`\${TRACK_BEACON_ENDPOINT}?tracking_id=\${STARFY_TRACK_ID}&session_id=\${sessionId}&event_type=page_view&event_data=\${eventDataString}&t=\${Date.now()}\`;
             
             // Log para debug
             console.log('Starfy Track: Sending Page View via Beacon to:', img.src);

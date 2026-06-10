@@ -21,7 +21,7 @@ function log_webhook($message) {
 }
 
 // Incluir os arquivos do PHPMailer
-$phpmailer_path = __DIR__ . '/PHPMailer/src/';
+$phpmailer_path = __DIR__ . '/../PHPMailer/src/';
 if (file_exists($phpmailer_path . 'Exception.php')) {
     require_once $phpmailer_path . 'Exception.php';
 } else {
